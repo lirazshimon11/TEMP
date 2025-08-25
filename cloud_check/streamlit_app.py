@@ -101,7 +101,7 @@ if "todos" not in st.session_state:
 if demo == "Overview":
     c1, c2, c3, c4 = st.columns([1.2, 1, 1, 1])
     with c1:
-        st.markdown("###### Status")
+        st.markdown("###### Statusss")
         with st.container(border=True):
             st.write("✅ Everything looks good.")
             st.progress(80, text="Bootstrapped")
@@ -210,3 +210,7 @@ elif demo == "Mini App":
 # ---------- Footer ----------
 st.write("")
 st.caption("Built with ❤️ + Streamlit • Ready to extend.")
+
+
+
+#what's going on
