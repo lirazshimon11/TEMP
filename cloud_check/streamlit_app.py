@@ -53,7 +53,7 @@ st.markdown(
 with st.sidebar:
     st.title("⚙️ Settings")
     st.caption("בחרי את ההדגמות שתרצי לראות")
-    demo = st.radio("Demo section", ["Data Playground", "Uploads", "Mini App"], horizontal=False)
+    demo = st.radio("Demo section", ["Overview", "Data Playground", "Uploads", "Mini App"], horizontal=False)
 
     st.divider()
     with st.expander("Theme tweak (client-side only)"):
@@ -101,9 +101,9 @@ if "todos" not in st.session_state:
 if demo == "Overview":
     c1, c2, c3, c4 = st.columns([1.2, 1, 1, 1])
     with c1:
-        st.markdown("###### Statusss")
+        st.markdown("###### Status")
         with st.container(border=True):
-            st.write("✅ Everything looks good.")
+            st.write("✅ Everything looks good............................")
             st.progress(80, text="Bootstrapped")
             st.caption("Tip: שחקי עם הקוד בתוך app.py ותראי תוצאה מיידית.")
 
@@ -210,7 +210,3 @@ elif demo == "Mini App":
 # ---------- Footer ----------
 st.write("")
 st.caption("Built with ❤️ + Streamlit • Ready to extend.")
-
-
-
-#what's going on
