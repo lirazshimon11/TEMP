@@ -53,7 +53,7 @@ st.markdown(
 with st.sidebar:
     st.title("⚙️ Settings")
     st.caption("בחרי את ההדגמות שתרצי לראות")
-    demo = st.radio("Demo section", ["Overview", "Data Playground", "Uploads", "Mini App"], horizontal=False)
+    demo = st.radio("Demo section", ["Data Playground", "Uploads", "Mini App"], horizontal=False)
 
     st.divider()
     with st.expander("Theme tweak (client-side only)"):
