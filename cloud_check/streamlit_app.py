@@ -5,143 +5,83 @@ import streamlit as st
 from datetime import datetime
 import pandas as pd
 from pathlib import Path
-import streamlit.components.v1 as components
 
 # -----------------------------
-# הגדרות בסיס ו-SEO
+# הגדרות בסיס
 # -----------------------------
 st.set_page_config(
     page_title="המרפאה של יפת – רפואה טבעית לגיל השלישי",
     page_icon="💚",
     layout="wide",
-    initial_sidebar_state="collapsed",   # NEW: במובייל ייפתח סגור
+    initial_sidebar_state="collapsed",  # סגור כברירת מחדל – חשוב למובייל
 )
 
-# --------- CSS מאוחד ורספונסיבי ---------
+# --------- CSS נקי ויציב ---------
 st.markdown("""
 <style>
-/* ========== בסיס ========== */
-:root { --lift: 64px; }
+/* בסיס */
 * { box-sizing: border-box; }
 html, body { margin:0; padding:0; }
-body { overflow-x: hidden; } /* NEW: בלי גלילה אופקית */
+body { overflow-x: hidden; }  /* אין גלילה אופקית */
 
-/* הסתרת תפריט עליון (נשאיר כפתור סיידבר במובייל) */
+/* השארת תפריט עליון כבוי (לא נוגעים בכפתור הסיידבר) */
 #MainMenu { visibility: hidden; }
 [data-testid="stToolbar"] { display: none !important; }
 
-/* סיידבר – דסקטופ (ימין ב-RTL) */
-[data-testid="stSidebar"]{
-  min-width: 350px;
-  max-width: 350px;
-  right: 0 !important; left: auto !important;
-  z-index: 100; /* מעל התוכן כשפתוח */
-}
+/* לא נוגעים במיקום הסיידבר – נותנים ל-Streamlit לנהל ריווחים.
+   זה מונע חפיפה בין הסיידבר לתוכן ב-Cloud. */
 
-/* הסתרת כפתור סיידבר בדסקטופ – במובייל כן נציג */
-@media (min-width: 769px){
-  [data-testid="stSidebarCollapseButton"],
-  button[title="Toggle sidebar"],
-  button[title="Show sidebar"],
-  button[title="Hide sidebar"] { display: none !important; }
-}
-
-/* "הרמת" העמוד – דסקטופ בלבד */
-.stApp header, .stApp header[data-testid="stHeader"] {
-  display: none !important; height: 0 !important; min-height: 0 !important;
-}
-.stApp [data-testid="stAppViewContainer"] {
-  padding-top: 0 !important; margin-top: calc(-1 * var(--lift)) !important;
-}
-.stApp .main .block-container, .stApp [data-testid="block-container"] {
-  padding-top: 0 !important; margin-top: calc(-1 * var(--lift)) !important; padding-bottom: 1rem !important;
-}
-.main .block-container { margin-top: -48px !important; }
+/* כפתור סיידבר תמיד זמין */
+[data-testid="stSidebarCollapseButton"],
+button[title="Toggle sidebar"],
+button[title="Show sidebar"],
+button[title="Hide sidebar"] { display: inline-flex !important; }
 
 /* תמונות רספונסיביות */
 img { max-width: 100%; height: auto; }
 
-/* טאבים – גלילה אופקית עדינה במובייל אם אין מקום */
+/* טיפוגרפיה – RTL + שליטה על גדלים */
+html, body, [class*="css"]{
+  direction: rtl;
+  text-align: right;
+  font-family: "Heebo","Rubik",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif;
+  font-size: var(--fs, 18px);
+}
+
+/* כותרות – תקן רספונסיבי ברור */
+.stApp h1, [data-testid="stMarkdownContainer"] h1 {
+  font-size: clamp(24px, 3.8vw + 10px, 44px) !important;
+  line-height: 1.25 !important;
+  margin: .5rem 0 1rem !important;
+  word-break: break-word;
+}
+.stApp h2, [data-testid="stMarkdownContainer"] h2 {
+  font-size: clamp(20px, 2.6vw + 8px, 32px) !important;
+  line-height: 1.3 !important;
+}
+
+/* כפתורים/קופסאות */
+.stButton>button { border-radius: 16px; padding: 0.6rem 1rem; }
+.box { background:#fff; border-radius:18px; padding:18px; box-shadow:0 8px 24px rgba(0,0,0,0.06); }
+
+/* טאבים – במובייל גלילה אופקית עדינה במקום שבירה מוזרה */
 .stTabs [role="tablist"]{ overflow-x:auto; white-space:nowrap; }
 
-/* ======== מובייל/טאבלט (עד 768px) ======== */
+/* מובייל: תקרה לפונט בסיסי כדי שהכול לא יתנפח */
 @media (max-width: 768px){
-  :root { --lift: 0px; } /* מבטלים הרמה */
-  .stApp header, .stApp header[data-testid="stHeader"] {
-    display: block !important; height: auto !important; min-height: auto !important;
-  }
-  .stApp [data-testid="stAppViewContainer"],
-  .stApp .main .block-container, .stApp [data-testid="block-container"], .main .block-container {
-    margin-top: 0 !important; padding-top: 0.5rem !important;
-  }
-
-  /* מציגים את כפתור פתיחת/סגירת הסיידבר במובייל */
-  [data-testid="stSidebarCollapseButton"],
-  button[title="Toggle sidebar"],
-  button[title="Show sidebar"],
-  button[title="Hide sidebar"] { display: inline-flex !important; }
-
-  /* סיידבר צר יותר במובייל; יושב מעל התוכן כשפתוח */
-  [data-testid="stSidebar"]{
-    min-width: 260px; max-width: 80vw;
-    position: sticky;
-    top: 0;
-  }
-
-  /* מגבלה על בסיס הפונט במובייל כדי שה-H1 לא יתנפח בגלל הסליידר */
-  html, body, [class*="css"] {
-    font-size: min(var(--fs, 18px), 18px) !important;  /* NEW: תקרה 18px בנייד */
-  }
-
-  /* כיוונון כותרות – זה הפתרון ל-H1 הענק בצילום */
-  .stApp h1, [data-testid="stMarkdownContainer"] h1 {
-    font-size: clamp(22px, 6.2vw + 6px, 32px) !important; line-height: 1.25 !important;
-    margin-top: .25rem !important; margin-bottom: .5rem !important;
-    word-break: break-word;
-  }
-  .stApp h2, [data-testid="stMarkdownContainer"] h2 {
-    font-size: clamp(18px, 4.6vw + 6px, 26px) !important; line-height: 1.3 !important;
-  }
-  .stApp h3, [data-testid="stMarkdownContainer"] h3 {
-    font-size: clamp(16px, 3.8vw + 6px, 22px) !important;
-  }
-
-  /* כפתורים/קופסאות – פחות ריווח כדי למנוע גלילה רוחבית */
+  html, body, [class*="css"]{ font-size: min(var(--fs, 18px), 18px) !important; }
   .stButton>button { padding: 0.5rem 0.9rem; }
   .box { padding: 14px; border-radius: 14px; }
 }
-
-/* קישורי קשר – תיקון כיווניות למספרים */
-.contact a { unicode-bidi: plaintext; }
 </style>
 """, unsafe_allow_html=True)
 
-# -----------------------------
-# שליטת גודל טקסט (סליידר) + הגדרת משתנה גלובלי
-# -----------------------------
+# שליטת גודל טקסט מתוך הסיידבר – מוגבל במובייל ע"י ה-CSS למעלה
 font_size = st.sidebar.slider("גודל טקסט", 14, 30, 18)
 st.markdown(f"<style>:root{{--fs:{font_size}px;}}</style>", unsafe_allow_html=True)
 
-# עיצוב RTL בסיסי
-st.markdown(
-    """
-    <style>
-    html, body, [class*="css"]{
-        direction: rtl;
-        text-align: right;
-        font-family: "Heebo","Rubik",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif;
-        font-size: var(--fs, 18px);
-    }
-    .stButton>button { border-radius: 16px; padding: 0.6rem 1rem; }
-    .box { background:#fff; border-radius:18px; padding:18px; box-shadow:0 8px 24px rgba(0,0,0,0.06); }
-    .muted { color:#666; font-size:0.9rem; }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
 # -----------------------------
-# נתונים – דמו + קריאה/כתיבה ל-CSV (מקומי)
+# נתונים – דמו
 # -----------------------------
 DATA_DIR = Path("data")
 REVIEWS_CSV = DATA_DIR / "reviews.csv"
@@ -200,7 +140,7 @@ with st.sidebar:
     )
 
 # -----------------------------
-# כותרת עליונה
+# תוכן
 # -----------------------------
 st.title("יפת 💚 – רפואה טבעית לגיל השלישי")
 st.write("מידע כללי על צמחי מרפא ושיטות משלימות המבוססות על ניסיונו של יפת. התוכן אינו תחליף לרופא.")
@@ -214,9 +154,6 @@ with st.container(border=True):
 
 st.divider()
 
-# -----------------------------
-# טאבּים
-# -----------------------------
 tab_home, tab_articles, tab_reviews, tab_contact = st.tabs([
     "ראשי", "מאמרים וטיפים", "ביקורות הקהילה", "יצירת קשר"
 ])
