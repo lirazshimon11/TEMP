@@ -6,6 +6,7 @@ import streamlit as st
 from datetime import datetime
 import pandas as pd
 from pathlib import Path
+import streamlit.components.v1 as components
 
 # -----------------------------
 # הגדרות בסיס ו-SEO
@@ -15,6 +16,86 @@ st.set_page_config(
     page_icon="💚",
     layout="wide",
 )
+
+# --------- CSS מאוחד: לשים בסוף הקובץ ---------
+
+st.markdown("""
+<style>
+/* ───── הסתרת כפתור כיווץ/הרחבת סיידבר ───── */
+[data-testid="stSidebarCollapseButton"] { display: none !important; }
+button[title="Toggle sidebar"],
+button[title="Show sidebar"],
+button[title="Hide sidebar"] { display: none !important; }
+
+/* ───── הסתרת תפריט/טולבר למעלה (כמו שהיה אצלך) ───── */
+#MainMenu { visibility: hidden; }
+[data-testid="stToolbar"] { display: none !important; }
+
+/* ───── הרחבת סרגל הצד (השארנו כמו שביקשת) ───── */
+[data-testid="stSidebar"] {
+  min-width: 350px;
+  max-width: 350px;
+  right: 0 !important;  /* RTL */
+  left: auto !important;
+}
+
+/* ───── טיפוגרפיה/קישורי פרטי קשר (למספרים בתוך RTL) ───── */
+.contact div { margin: 6px 0; }
+.contact a { unicode-bidi: plaintext; }
+
+/* ───── הרמת כל הדף למעלה ─────
+   נטפל בכל השכבות + נגדיר LIFT כדי שיהיה קל לשחק עם הגובה */
+:root { --lift: 64px; }  /* שנה ל-32/48/80 בהתאם לצורך */
+
+.stApp header,
+.stApp header[data-testid="stHeader"] {
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+}
+
+/* איפוס ריווחים גלובליים */
+html, body, .stApp { margin: 0 !important; padding: 0 !important; }
+
+/* הקונטיינרים הראשיים */
+.stApp [data-testid="stAppViewContainer"] {
+  padding-top: 0 !important;
+  margin-top: calc(-1 * var(--lift)) !important;
+}
+
+.stApp .main {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* הבלוק שמחזיק את התוכן בפועל */
+.stApp .main .block-container,
+.stApp [data-testid="block-container"] {
+  padding-top: 0 !important;
+  margin-top: calc(-1 * var(--lift)) !important;
+  padding-bottom: 1rem !important;
+}
+
+/* אלמנט ראשון בתוך הבלוק – אל תיתן לו להחזיר מרווח */
+.stApp .main .block-container > *:first-child {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* כותרות – לבטל מרווח עליון */
+.stApp h1,
+.stApp [data-testid="stMarkdownContainer"] h1 {
+  margin-top: 0 !important;
+}
+
+/* מרים את התוכן המרכזי (בלוק קונטיינר) למעלה */
+.main .block-container {
+    margin-top: -48px !important;  /* שחק עם הערך: -32px / -40px / -56px */
+}
+
+</style>
+""", unsafe_allow_html=True)
+
 
 # בחירת גודל טקסט
 font_size = st.sidebar.slider("גודל טקסט", 14, 30, 18)
@@ -84,12 +165,25 @@ with st.sidebar:
     **חשוב**: אין כאן ייעוץ רפואי. יש לפנות לרופא מוסמך בכל בעיה.
     """)
     st.divider()
+    st.markdown("### פרטי התקשרות")
+    st.markdown(
+        """
+    - 📞 [052-265-2817](tel:+972522652817)
+    - ✉️ [example@example.com](mailto:example@example.com)
+    - 💬 WhatsApp: [שליחת הודעה](https://wa.me/972522652817)
+        """,
+        unsafe_allow_html=False,
+    )
+
     st.markdown("""
-    **פרטי התקשרות**
-    📞 0522652817
-    ✉️ example@example.com
-    💬 WhatsApp: https://wa.me/972522652817
-    """)
+    <style>
+    /* הרחבת סרגל הצד */
+    [data-testid="stSidebar"] {
+        min-width: 350px;   /* רוחב מינימלי */
+        max-width: 350px;   /* רוחב מקסימלי */
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
 # -----------------------------
 # כותרת עליונה
@@ -218,22 +312,22 @@ with tab_contact:
 
         - 📞 טלפון: **0522652817**
         - ✉️ אימייל: **example@example.com**
-        - 💬 WhatsApp: **wa.me/972500000000**
+        - 💬 WhatsApp: **wa.me/972522652817**
         - 📍 אזור פעילות: מרכז הארץ
 
         **טופס מקוון** (מומלץ): אפשר לחבר Google Form/Typeform ולקבל הודעות למייל ולגיליון.
         """
     )
 
-    with st.expander("איך לחבר Google Form לאתר?"):
-        st.markdown(
-            """
-            1. צרו Google Form חדש לשם *יצירת קשר* או *שליחת ביקורת*.
-            2. קבלו קישור Embed (Iframe) של הטופס.
-            3. הוסיפו כאן `st.components.v1.iframe(url, height=600)` כדי להטמיע את הטופס בתוך העמוד.
-            4. התגובות ייאספו אוטומטית ל-Google Sheets שתוכלו להציג בלשונית הביקורות/פניות.
-            """
-        )
+    #with st.expander("איך לחבר Google Form לאתר?"):
+    #    st.markdown(
+    #        """
+    #        1. צרו Google Form חדש לשם *יצירת קשר* או *שליחת ביקורת*.
+    #        2. קבלו קישור Embed (Iframe) של הטופס.
+    #        3. הוסיפו כאן `st.components.v1.iframe(url, height=600)` כדי להטמיע את הטופס בתוך העמוד.
+    #        4. התגובות ייאספו אוטומטית ל-Google Sheets שתוכלו להציג בלשונית הביקורות/פניות.
+    #        """
+    #    )
 
     st.divider()
     st.caption("© 2025 יפת – רפואה טבעית. אין לראות בתוכן ייעוץ רפואי.")
