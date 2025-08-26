@@ -69,7 +69,7 @@ def stars(n: int):
 # סרגל צד
 # -----------------------------
 with st.sidebar:
-    st.image("C:\COMPUTERS\PROJECTS\TEMP\סבא.jpg")
+    st.image("סבא.jpg")
     st.markdown("""
     ### על יפת
     יפת מגדל צמחי מרפא ומציע רפואה אלטרנטיבית לאנשים מבוגרים עם לחץ דם, כולסטרול או פצעי לחץ.
