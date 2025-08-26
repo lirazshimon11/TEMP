@@ -45,6 +45,9 @@ st.markdown(
 DATA_DIR = Path("data")
 REVIEWS_CSV = DATA_DIR / "reviews.csv"
 DATA_DIR.mkdir(exist_ok=True)
+APP_DIR = Path(__file__).resolve().parent
+IMG_PATH = APP_DIR / "images" / "saba.jpg"
+
 
 if REVIEWS_CSV.exists():
     reviews_df = pd.read_csv(REVIEWS_CSV)
@@ -69,7 +72,11 @@ def stars(n: int):
 # סרגל צד
 # -----------------------------
 with st.sidebar:
-    st.image("images/saba.jpg")
+    if IMG_PATH.exists():
+        st.image(str(IMG_PATH))
+    else:
+        st.warning("לא נמצאה התמונה images/saba.jpg בקונטיינר. מציג תמונת ברירת מחדל.")
+        st.image("https://static.streamlit.io/examples/dice.jpg")
     st.markdown("""
     ### על יפת
     יפת מגדל צמחי מרפא ומציע רפואה אלטרנטיבית לאנשים מבוגרים עם לחץ דם, כולסטרול או פצעי לחץ.
