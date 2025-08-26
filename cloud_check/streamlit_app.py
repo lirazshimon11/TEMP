@@ -21,23 +21,14 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-/* ───── הסתרת כפתור כיווץ/הרחבת סיידבר ───── */
-[data-testid="stSidebarCollapseButton"] { display: none !important; }
-button[title="Toggle sidebar"],
-button[title="Show sidebar"],
-button[title="Hide sidebar"] { display: none !important; }
-
-/* ───── הסתרת תפריט/טולבר למעלה (כמו שהיה אצלך) ───── */
-#MainMenu { visibility: hidden; }
-[data-testid="stToolbar"] { display: none !important; }
 
 /* ───── הרחבת סרגל הצד (השארנו כמו שביקשת) ───── */
-[data-testid="stSidebar"] {
-  min-width: 350px;
-  max-width: 350px;
-  right: 0 !important;  /* RTL */
-  left: auto !important;
-}
+# [data-testid="stSidebar"] {
+#   min-width: 350px;
+#   max-width: 350px;
+#   right: 0 !important;  /* RTL */
+#   left: auto !important;
+# }
 
 /* ───── טיפוגרפיה/קישורי פרטי קשר (למספרים בתוך RTL) ───── */
 .contact div { margin: 6px 0; }
@@ -45,17 +36,8 @@ button[title="Hide sidebar"] { display: none !important; }
 
 /* ───── הרמת כל הדף למעלה ─────
    נטפל בכל השכבות + נגדיר LIFT כדי שיהיה קל לשחק עם הגובה */
-:root { --lift: 64px; }  /* שנה ל-32/48/80 בהתאם לצורך */
+:root { --lift: 48  px; }  /* שנה ל-32/48/80 בהתאם לצורך */
 
-.stApp header,
-.stApp header[data-testid="stHeader"] {
-  display: none !important;
-  height: 0 !important;
-  min-height: 0 !important;
-}
-
-/* איפוס ריווחים גלובליים */
-html, body, .stApp { margin: 0 !important; padding: 0 !important; }
 
 /* הקונטיינרים הראשיים */
 .stApp [data-testid="stAppViewContainer"] {
@@ -63,35 +45,6 @@ html, body, .stApp { margin: 0 !important; padding: 0 !important; }
   margin-top: calc(-1 * var(--lift)) !important;
 }
 
-.stApp .main {
-  padding-top: 0 !important;
-  margin-top: 0 !important;
-}
-
-/* הבלוק שמחזיק את התוכן בפועל */
-.stApp .main .block-container,
-.stApp [data-testid="block-container"] {
-  padding-top: 0 !important;
-  margin-top: calc(-1 * var(--lift)) !important;
-  padding-bottom: 1rem !important;
-}
-
-/* אלמנט ראשון בתוך הבלוק – אל תיתן לו להחזיר מרווח */
-.stApp .main .block-container > *:first-child {
-  margin-top: 0 !important;
-  padding-top: 0 !important;
-}
-
-/* כותרות – לבטל מרווח עליון */
-.stApp h1,
-.stApp [data-testid="stMarkdownContainer"] h1 {
-  margin-top: 0 !important;
-}
-
-/* מרים את התוכן המרכזי (בלוק קונטיינר) למעלה */
-.main .block-container {
-    margin-top: -48px !important;  /* שחק עם הערך: -32px / -40px / -56px */
-}
 
 </style>
 """, unsafe_allow_html=True)
